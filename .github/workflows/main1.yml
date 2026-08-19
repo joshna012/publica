@@ -28,7 +28,6 @@ concurrency:
 jobs:
   crd-setup:
     name: "🚀 RDP Runner"
-    # This line now uses your dropdown choice!
     runs-on: ${{ github.event.inputs.OS_VERSION }}
 
     env:
@@ -48,26 +47,18 @@ jobs:
           
           Write-Host "Downloading Chrome Remote Desktop..."
           Invoke-WebRequest -Uri "https://dl.google.com/edgedl/chrome-remote-desktop/chromeremotedesktophost.msi" -OutFile "$userDownloads\crdhost.msi" -UseBasicParsing
-          
-          Write-Host "Downloading Node.js..."
-          Invoke-WebRequest -Uri "https://nodejs.org/dist/v24.11.0/node-v24.11.0-x64.msi" -OutFile "$userDownloads\node-v24.msi" -UseBasicParsing
-          
-          Write-Host "Downloading VS Code..."
-          Invoke-WebRequest -Uri "https://code.visualstudio.com/sha/download?build=stable&os=win32-x64-user" -OutFile "$userDownloads\VisualStudio.exe" -UseBasicParsing
 
           Write-Host "Downloading Virtual Audio Cable..."
           Invoke-WebRequest -Uri "https://download.vb-audio.com/Download_CABLE/VBCABLE_Driver_Pack45.zip" -OutFile "$userDownloads\VBCABLE.zip" -UseBasicParsing
 
-          Write-Host "Extracting and Installing Drivers..."
+          Write-Host "Extracting and Installing Audio Drivers..."
           Expand-Archive -Path "$userDownloads\VBCABLE.zip" -DestinationPath "$userDownloads\VBCABLE" -Force
           Start-Process -Wait -FilePath "$userDownloads\VBCABLE\VBCABLE_Setup_x64.exe" -ArgumentList "-i", "-h" -Verb RunAs
 
-          Write-Host "Silent Installation of Apps..."
+          Write-Host "Installing Chrome Remote Desktop..."
           Start-Process -Wait -FilePath "msiexec.exe" -ArgumentList "/i `"$userDownloads\crdhost.msi`" /qn /norestart"
-          Start-Process -Wait -FilePath "msiexec.exe" -ArgumentList "/i `"$userDownloads\node-v24.msi`" /qn /norestart"
-          Start-Process -Wait -FilePath "$userDownloads\VisualStudio.exe" -ArgumentList "/verysilent /mergetasks=!runcode"
           
-          Write-Host "✅ Software and Drivers installed."
+          Write-Host "✅ Software and Audio Drivers installed."
 
       - name: "🔊 Enable & Initialize Windows Audio"
         run: |
