@@ -1,4 +1,4 @@
-name: "Windows Cloud PC (Multi-OS + Sound)"
+name: "Windows Cloud PC (Multi-OS + Sound + Virtualization)"
 
 on:
   workflow_dispatch:
@@ -74,6 +74,16 @@ jobs:
           
           Write-Host "✅ Audio services initialized."
 
+      - name: "⚙️ Enable Virtualization (Hyper-V & WHPX)"
+        run: |
+          Write-Host "Enabling Windows Hypervisor Platform (WHPX) for Emulator..."
+          Enable-WindowsOptionalFeature -Online -FeatureName HypervisorPlatform -All -NoRestart
+          
+          Write-Host "Enabling Virtual Machine Platform..."
+          Enable-WindowsOptionalFeature -Online -FeatureName VirtualMachinePlatform -All -NoRestart
+          
+          Write-Host "✅ Virtualization features enabled."
+
       - name: "🌟 Start Chrome Remote Desktop"
         run: |
           Write-Host "Executing Google Headless Code..."
@@ -91,5 +101,6 @@ jobs:
           Write-Host "💻 Cloud PC OS: ${{ github.event.inputs.OS_VERSION }}"
           Write-Host "🔗 Access: https://remotedesktop.google.com/access"
           Write-Host "🔊 Sound is READY. Set output to 'CABLE Input' if silent."
+          Write-Host "⚙️ Virtualization ENABLED. You can now install and run Android Studio / Emulator."
           Write-Host "==============================================="
           while ($true) { Start-Sleep -Seconds 300 }
